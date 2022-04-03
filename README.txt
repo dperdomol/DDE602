@@ -1,1 +1,0 @@
-This is a README text for the program
