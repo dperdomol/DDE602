@@ -11,15 +11,21 @@ Created on Fri Mar 18 17:36:29 2022
 import socket, threading, textblob
 
 def spellChecker(msg):
+    arrMsgToClient = []
     arrWords = msg.split()
     for word in arrWords:
         word.lower()
-        print("Word no spelling correction: ", word)
+        # print("Word no spelling correction: ", word)
         # w = textblob.TextBlob(word)
         w = textblob.TextBlob(word)
         w2 = w.correct()
         if w != w2:
-            print('Original Word {} - Suggested Word: {}'.format(w, w2))
+            #print('Original Word {} - Suggested Word: {}'.format(w, w2))
+            wordMsg = 'Original Word {} - Suggested Word: {}'.format(w, w2)
+            arrMsgToClient.append(wordMsg)
+    return arrMsgToClient
+    # for corrWords in arrMsgToClient:
+    #     print(corrWords)
 
 class ClientThread(threading.Thread):
     def __init__(self, clientAddress, clientsocket):
@@ -33,10 +39,10 @@ class ClientThread(threading.Thread):
         while True:
             data = self.csocket.recv(2048)
             msg = data.decode()
-            spellChecker(msg)
+            for word in msg:
+                print(word)
             if msg=='bye':
               break
-            #print ("from client", msg)
             self.csocket.send(bytes(msg,'UTF-8'))
         print ("Client at ", clientAddress , " disconnected...")
 LOCALHOST = "127.0.0.1"
